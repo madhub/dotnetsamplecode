@@ -9,7 +9,6 @@ namespace Apidemo.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
     public class ValuesController : ControllerBase
     {
         // GET api/values
