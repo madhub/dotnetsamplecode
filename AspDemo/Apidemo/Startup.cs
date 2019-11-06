@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using Apidemo.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,10 +34,18 @@ namespace Apidemo
             HttpClient httpClient = new HttpClient();
             // add the required services
             services.AddRevocation(cacheRevocatonHandler, httpClient);
+            AddHealthChecks(services);
             
+
+
             // add text reader support
             services.AddMvc(o => o.AddRevocationSupport())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+        }
+        public void AddHealthChecks(IServiceCollection services)
+        {
+            services.AddSingleton<IHealthCheck, SampleHealthCheck>();
+            services.AddSingleton<IHealthCheck, SampleHealthCheck2>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +60,7 @@ namespace Apidemo
                 app.UseHsts();
             }
             app.UsePathBase("/store/abc");
+            app.UseHealthCheck();
 
             app.UseHttpsRedirection();
             app.UseMvc();
